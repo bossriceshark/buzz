@@ -209,7 +209,10 @@ test("@ trigger prioritizes channel members before runnable personas and other m
 
   const dropdown = autocomplete(page);
   await expect(dropdown).toBeVisible();
-  await expect(dropdown.getByText("alice")).toHaveCount(0);
+  // alice is a shared relay agent (directory respond_to: "anyone" with a
+  // shared channel) and a channel member: mentionable even though she is
+  // not locally managed.
+  await expect(dropdown.getByText("alice")).toBeVisible();
   await expect(dropdown.getByText("bob")).toBeVisible();
   await expect(dropdown.getByText("Fizz")).toBeVisible();
   await expect(dropdown.getByText("charlie")).toBeVisible();
@@ -227,6 +230,9 @@ test("@ trigger prioritizes channel members before runnable personas and other m
   const suggestionText = await suggestions.allInnerTexts();
   const fizzIndex = suggestionText.findIndex((text) => text.includes("Fizz"));
   const bobIndex = suggestionText.findIndex((text) => text.includes("bob"));
+  const aliceIndex = suggestionText.findIndex((text) =>
+    text.includes("alice"),
+  );
   const charlieIndex = suggestionText.findIndex((text) =>
     text.includes("charlie"),
   );
@@ -235,9 +241,13 @@ test("@ trigger prioritizes channel members before runnable personas and other m
   );
   expect(fizzIndex).toBeGreaterThanOrEqual(0);
   expect(bobIndex).toBeGreaterThanOrEqual(0);
+  expect(aliceIndex).toBeGreaterThanOrEqual(0);
   expect(charlieIndex).toBeGreaterThanOrEqual(0);
   expect(outsiderIndex).toEqual(-1);
   expect(bobIndex).toBeLessThan(fizzIndex);
+  // alice is a channel member, so she sorts in the member tier ahead of
+  // personas and non-member managed agents.
+  expect(aliceIndex).toBeLessThan(fizzIndex);
   expect(fizzIndex).toBeLessThan(charlieIndex);
 });
 
