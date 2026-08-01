@@ -230,9 +230,7 @@ test("@ trigger prioritizes channel members before runnable personas and other m
   const suggestionText = await suggestions.allInnerTexts();
   const fizzIndex = suggestionText.findIndex((text) => text.includes("Fizz"));
   const bobIndex = suggestionText.findIndex((text) => text.includes("bob"));
-  const aliceIndex = suggestionText.findIndex((text) =>
-    text.includes("alice"),
-  );
+  const aliceIndex = suggestionText.findIndex((text) => text.includes("alice"));
   const charlieIndex = suggestionText.findIndex((text) =>
     text.includes("charlie"),
   );
