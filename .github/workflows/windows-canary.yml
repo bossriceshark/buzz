@@ -16,7 +16,9 @@ permissions:
 jobs:
   build:
     name: Build Windows canary
-    if: github.repository == 'block/buzz'
+    # Temporary fork-only canary: required while upstream issue #4128 remains open.
+    # Do not merge this guard change upstream.
+    if: github.repository == 'bossriceshark/buzz'
     runs-on: windows-latest
     timeout-minutes: 60
     permissions:
@@ -29,8 +31,8 @@ jobs:
         env:
           SOURCE_REF: ${{ github.ref }}
         run: |
-          if [[ "$SOURCE_REF" != "refs/heads/main" ]]; then
-            echo "::error::Canary builds must run from main; got $SOURCE_REF"
+          if [[ "$SOURCE_REF" != "refs/heads/build/windows-canary-fork" ]]; then
+            echo "::error::Fork canary builds must run from build/windows-canary-fork; got $SOURCE_REF"
             exit 1
           fi
 
